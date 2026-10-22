@@ -9,19 +9,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      # Community-maintained OpenOrbis PS4 toolchain image
-      image: openorbis/ps4-toolchain:latest
     steps:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Configure
-        run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
-
-      - name: Build
-        run: cmake --build build --parallel
+      - name: Build with OpenOrbis Toolchain
+        uses: OpenOrbis/toolchain-action@main
+        with:
+          version: latest
+          command: |
+            cmake -B build -DCMAKE_BUILD_TYPE=Release
+            cmake --build build --parallel
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
