@@ -9,17 +9,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: openorbisofficial/toolchain:latest
+      # The toolchain image runs as the unprivileged 'orbis' user by default.
+      # If your build needs root, uncomment the next line.
+      # options: --user root
     steps:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Build with OpenOrbis Toolchain
-        uses: OpenOrbis/toolchain-action@main
-        with:
-          version: latest
-          command: |
-            cmake -B build -DCMAKE_BUILD_TYPE=Release
-            cmake --build build --parallel
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --parallel
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
